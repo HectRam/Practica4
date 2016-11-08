@@ -20,9 +20,10 @@ public class Operando extends Practica4{
     
     
     
-    String[] Direccion(String Operando,String dir, int lin,String moddir,String codop,int operval){
+    String[] Direccion(String Operando,String dir, int lin,String moddir,String codop,int operval,int BanOrg){
         String[] Resultado = new String[] {"null", "null"};
         String  b=".err",Mdir="null", Res="null";
+        String ContLoc="Null";
         int x=0,y=0,z=0; 
         boolean banRel=false;
         try{
@@ -477,8 +478,41 @@ public class Operando extends Practica4{
                      }
                   }
               }
+              //////////////////////////////////////////////////////////ORG
+              if(codop.equals("ORG")&&BanOrg!=1){
+                  int ORG=0;
+                  //Entra Hexadecimal
+                  if(Operando.matches("^\\$.*")){
+                      
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           ORG=Integer.parseInt(Hexa,16);
+                          if(ORG<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(ORG).toUpperCase(); 
+                              BanOrg=1;
+                              }
+                             }else{
+                                  if(Operando.matches("^[0-9]?[0-9]*")){
+                                   ORG=Integer.parseInt(Operando);
+                                   ContLoc=Integer.toHexString(ORG).toUpperCase();
+                                     BanOrg=1; 
+                                  }
+                              else{
+                               error.write("Linea: "+lin+" Error: ORG sobrepasa el valor limite");
+                               error.newLine();
+                                  }
+                          }
+                             
                   
-          }
+                  
+              }
+                 
+              
+              
+              
+              
+          }/////////////////////Termina validacion de Operando
           
           
           if(Mdir=="null"){
@@ -503,6 +537,7 @@ public class Operando extends Practica4{
         System.out.println("Mdir: "+Mdir+"Res op: "+Res);
         Resultado[0]=Mdir;
         Resultado[1]=Res;
+        Resultado[3]=Integer.toString(BanOrg);
         System.out.println("Mdir: "+Resultado[0]+"Res op: "+Resultado[1]);
       return Resultado;
     }
