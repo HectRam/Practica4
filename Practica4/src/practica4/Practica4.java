@@ -28,7 +28,7 @@ public class Practica4 {
         String thisLine,dir,a=".asm",b=".err",i=".inst",ax=null;
         String[] Resultado = new String[] {"null", "null"};
         thisLine = null;
-        int poslin=0,c=0,pos=0,banbuffer=0,compara=0,banCod=0,sioperI=2,operval=0;
+        int poslin=0,c=0,pos=0,banbuffer=0,compara=0,banCod=0,sioperI=2,operval=0,BanOrg=0;
         espacios es;
         Operando op;
         String etiqueta = null, codop = null, operando = null, comentario=null,linToken=null,codoplin=null,sioperS=null,codopprue=null,Mdir=null;
@@ -246,9 +246,10 @@ public class Practica4 {
                                      operando=linToken;
                                  //    System.out.println("Operando  "+operando);
                                     
-                                    Resultado = op.Direccion(operando,dir,c,moddir,codop, operval);
+                                    Resultado = op.Direccion(operando,dir,c,moddir,codop, operval,BanOrg);
                                     Mdir=Resultado[0];
                                     Res=Resultado[1];
+                                    BanOrg=Integer.parseInt(Resultado[2]);
                                      //System.out.println("Modo de direccion "+Mdir);
                                      
                                      if(codop.equals(" ")){
