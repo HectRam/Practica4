@@ -5,10 +5,14 @@
  */
 package practica4;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -20,10 +24,11 @@ public class Operando extends Practica4{
     
     
     
-    String[] Direccion(String Operando,String dir, int lin,String moddir,String codop,int operval,int BanOrg){
-        String[] Resultado = new String[] {"null", "null"};
+    String[] Direccion(String Operando,String dir, int lin,String moddir,String codop,int operval,int BanOrg,String ContLoc){
+        String[] Resultado = new String[] {"null","null","null","0000"};
         String  b=".err",Mdir="null", Res="null";
-        String ContLoc="Null";
+        String Byte="null";
+        int BanContLoc=0;
         int x=0,y=0,z=0; 
         boolean banRel=false;
         try{
@@ -32,16 +37,488 @@ public class Operando extends Practica4{
         BufferedWriter error=new BufferedWriter(fw);
         
            // System.out.println("Codop antes: "+codop);
-      if(Operando.matches("^\\%.*")||Operando.matches("^\\@.*")||Operando.matches("\\$.*")||Operando.matches("^\\#.*")||Operando.matches("^[0-9]+")||Operando.matches("^[a-zA-Z]+")||Operando.matches("^\\[.*")||Operando.matches("^\\-.*")||Operando.matches("^\\,.*")){
+      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$")||Operando.matches("^\\#.*")||Operando.matches("^[0-9]+")||Operando.matches("^[a-zA-Z]+")||Operando.matches("^\\[.*")||Operando.matches("^\\-.*")||Operando.matches("^\\,.*")){
           /*   
           
         */  
-         
-          
+         codop.toUpperCase();
           //System.out.println("Codop mod: "+codop);
          // System.out.println("A2: "+z);
+         
+         
+         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+               /////////////////////////////////////////////////////ContLoc
+              //////////////////////////////////////////////////////////ORG
+               
+              if(codop.equals("ORG")&&BanOrg!=1){
+                  int ORG=0; 
+                   System.out.println("ORG: "+ORG+"ContLoc"+ContLoc);
+                  if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$")){
+                      //Entra Hexadecimal
+                      if(Operando.matches("^\\$.*")){
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           ORG=Integer.parseInt(Hexa,16);
+                          if(ORG<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(ORG).toUpperCase(); 
+                              BanOrg=1;
+                              Mdir="DTV";
+                              }
+                             }//termina Hexadecimal
+                            //Empieza Octal
+                      if(Operando.matches("^\\@.*")){
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           ORG=Integer.parseInt(Hexa,8);
+                          if(ORG<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(ORG).toUpperCase(); 
+                              BanOrg=1;
+                              Mdir="DTV";
+                              }
+                             }//termina Octal
+                            //Empieza Binario
+                       if(Operando.matches("^\\%.*")){
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           ORG=Integer.parseInt(Hexa,2);
+                          if(ORG<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(ORG).toUpperCase(); 
+                              BanOrg=1;
+                              }
+                             }//termina Binario
+                               }else{//sin base
+                                  if(Operando.matches("^[0-9]*")){
+                                   ORG=Integer.parseInt(Operando);
+                                   if(ORG<=65535){
+                                   ContLoc=Integer.toHexString(ORG).toUpperCase();
+                                  Mdir="DTV";
+                                     BanOrg=1; 
+                                   }
+                                  }
+                              else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+ORG+")");
+                               error.newLine();
+                                  }
+                          }
+                  
+                  BanContLoc=1;
+              }//Termina ORG
+              /////////////////////EQU
+              if(codop.equals("EQU")){
+                  int EQU=0;
+                  
+                  if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$")){
+                      
+                  //Entra Hexa
+                  if(Operando.matches("^\\$.*")){
+                      
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           EQU=Integer.parseInt(Hexa,16);
+                          if(EQU<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(EQU).toUpperCase(); 
+                              Mdir="DTV";
+                              }
+                             }//termina hexadecimal
+                  
+                  //Inicia Octal
+                  if(Operando.matches("^\\@.*")){
+                      
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           EQU=Integer.parseInt(Hexa,8);
+                          if(EQU<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(EQU).toUpperCase(); 
+                              Mdir="DTV";
+                              }
+                             }//Termina Octal
+                  //Inicia Binario
+                   if(Operando.matches("^\\%.*")){
+                      
+                      int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           EQU=Integer.parseInt(Hexa,2);
+                          if(EQU<=65535){
+                               //inserta el valor en Hexadecimal al Contador Logico
+                              ContLoc=Integer.toHexString(EQU).toUpperCase(); 
+                              Mdir="DTV";
+                              }
+                             }//Termina Binario
+                             }else{//sin base
+                                  if(Operando.matches("^[0-9]?[0-9]*")){
+                                   EQU=Integer.parseInt(Operando);
+                                   if(EQU<=65535){
+                                   ContLoc=Integer.toHexString(EQU).toUpperCase();
+                                    Mdir="DTV"; 
+                                   }
+                                  }
+                              else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+EQU+")");
+                               error.newLine();
+                                  }
+                          }
+                  
+                  BanContLoc=1;
+              }//Termina EQU
+              ////////////////////////Directivas de constantes
+              ////////////////////////DW, DB, DC.W, DC.B, FCB, FDB, FCC
+              if(codop.equals("DW")||codop.equals("DB")||codop.equals("DC.B")||codop.equals("FCB")||codop.equals("FDB")||codop.equals("FCC"))
+              {
+                  int DiCons=0;
+                  //De un Byte
+                  if(codop.equals("DB")||codop.equals("DC.B")||codop.equals("FCB"))
+                  {
+                      
+                      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$"))
+                      {
+                          //entra Hexadecimal
+                      if(Operando.matches("^\\$.*"))
+                       {
+                         int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           DiCons=Integer.parseInt(Hexa,16);
+                           if(DiCons<=255&&DiCons>=0){
+                               //suma 1 l contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+1;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                       }//termina Hexadecimal
+                      //entra octal
+                      if(Operando.matches("^\\@.*"))
+                       {
+                         int siz=Operando.length();
+                        String Oct=Operando.substring(1,siz);
+                           DiCons=Integer.parseInt(Oct,8);
+                           if(DiCons<=255&&DiCons>=0){
+                               //suma 1 l contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+1;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                       }//termina octal
+                      //entra Binario
+                      if(Operando.matches("^\\%.*"))
+                       {
+                         int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           DiCons=Integer.parseInt(Hexa,2);
+                           if(DiCons<=255&&DiCons>=0){
+                               //suma 1 al contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+1;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                       }//termina Binario
+                      }else{//sin base
+                          if(Operando.matches("^[0-9]?[0-9]*")){
+                          DiCons=Integer.parseInt(Operando,10);
+                           if(DiCons<=255&&DiCons>=0){
+                               //suma 1 al contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+1;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                          }else{
+                               error.write("Linea: "+lin+" Error: "+codop+" no se encontro un valor: "+DiCons);
+                               error.newLine();
+                                  }
+                      }
+                  }//termina de un byte
+                  //empieza de dos bytes
+                  if(codop.equals("DW")||codop.equals("DC.W")||codop.equals("FDB"))
+                  {
+                      
+                      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$"))
+                      {
+                          //entra Hexadecimal
+                      if(Operando.matches("^\\$.*"))
+                       {
+                         int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           DiCons=Integer.parseInt(Hexa,16);
+                           if(DiCons<=65535&&DiCons>=0){
+                               //suma 2 a contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+2;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                       }//termina Hexadecimal
+                      //entra octal
+                      if(Operando.matches("^\\@.*"))
+                       {
+                         int siz=Operando.length();
+                        String Oct=Operando.substring(1,siz);
+                           DiCons=Integer.parseInt(Oct,8);
+                           if(DiCons<=65535&&DiCons>=0){
+                               //suma 2 a contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+2;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                       }//termina octal
+                      //entra Binario
+                      if(Operando.matches("^\\%.*"))
+                       {
+                         int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           DiCons=Integer.parseInt(Hexa,2);
+                           if(DiCons<=65535&&DiCons>=0){
+                               //suma 2 a contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+2;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                       }//termina Binario
+                      }else{//sin base
+                          if(Operando.matches("^[0-9]?[0-9]*")){
+                          DiCons=Integer.parseInt(Operando,10);
+                           if(DiCons<=65535&&DiCons>=0){
+                               //suma 2 al contloc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+2;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiCons+")");
+                               error.newLine();
+                           }
+                          }else{
+                               error.write("Linea: "+lin+" Error: "+codop+" no se encontro un valor: "+DiCons);
+                               error.newLine();
+                                  }
+                      }
+                  }//termina de dos bytes
+                  //Entra FCC
+                  if(codop.equals("FCC")){
+                      
+                      if(Operando.matches("^\\\".*\\\"$")){
+                          
+                         int siz=Operando.length();
+                        String FCC=Operando.substring(1,siz);
+                        StringTokenizer FCCx = new StringTokenizer(FCC,"\\\"");
+                             String FCC2=FCCx.nextToken();
+                            DiCons =FCC2.length();
+                            int cont=Integer.parseInt(ContLoc,16);
+                            cont=cont+DiCons;//suma la longitud del operando
+                           ContLoc=Integer.toHexString(cont).toUpperCase();
+                           Mdir="DTV";
+                      }else{
+                      error.write("Linea: "+lin+" Error:"+codop+" no cumple con el las especificaciones: "+DiCons);
+                      error.newLine();
+                      }
+  
+                  }//Termina FCC
+                  
+                  BanContLoc=1;
+              }//////Terminan directivas constantes
+              ////////////////////////////Directivas de reserva de espacio en memoria
+              /////////////////////////////DS, DS.B, DS.W, RMB, RMW
+              if(codop.equals("DS")||codop.equals("DS.B")||codop.equals("DS.W")||codop.equals("RMB")||codop.equals("RMW")){
+                  int DiMem=0;
+                  //De un byte
+                  if(codop.equals("DS")||codop.equals("DS.B")||codop.equals("RMB")){
+                      
+                      if(Operando.matches("\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$"))
+                      {
+                          //entra Hexadecimal
+                      if(Operando.matches("^\\$.*"))
+                       {
+                         int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           DiMem=Integer.parseInt(Hexa,16);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                       }//termina Hexadecimal
+                      //entra Octal
+                      if(Operando.matches("^\\@.*"))
+                       {
+                         int siz=Operando.length();
+                        String Oct=Operando.substring(1,siz);
+                           DiMem=Integer.parseInt(Oct,8);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                       }//entra Binario
+                      if(Operando.matches("^\\%.*"))
+                       {
+                         int siz=Operando.length();
+                        String Bin=Operando.substring(1,siz);
+                           DiMem=Integer.parseInt(Bin,2);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                       }
+                      }else{//sin base 
+                          if(Operando.matches("^[0-9]?[0-9]*")){
+                          DiMem=Integer.parseInt(Operando,10);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                          }else{
+                               error.write("Linea: "+lin+" Error: "+codop+" no se encontro um valor");
+                               error.newLine();
+                                  }
+                      }
+                      
+                      
+                  }//termina de un Byte
+                  //entra de dos Bytes
+                  if(codop.equals("DS.W")||codop.equals("RMW")){
+                      
+                      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$"))
+                      {
+                          //entra Hexadecimal
+                      if(Operando.matches("^\\$.*"))
+                       {
+                         int siz=Operando.length();
+                        String Hexa=Operando.substring(1,siz);
+                           DiMem=Integer.parseInt(Hexa,16);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando*2 con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               DiMem=DiMem*2;
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                       }//termina Hexadecimal
+                      //entra Octal
+                      if(Operando.matches("^\\@.*"))
+                       {
+                         int siz=Operando.length();
+                        String Oct=Operando.substring(1,siz);
+                           DiMem=Integer.parseInt(Oct,8);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando*2 con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               DiMem=DiMem*2;
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                       }//entra Binario
+                      if(Operando.matches("^\\%.*"))
+                       {
+                         int siz=Operando.length();
+                        String Bin=Operando.substring(1,siz);
+                           DiMem=Integer.parseInt(Bin,2);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando*2 con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               DiMem=DiMem*2;
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase(); 
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                       }
+                      }else{//sin base 
+                          if(Operando.matches("^[0-9]?[0-9]*")){
+                          DiMem=Integer.parseInt(Operando,10);
+                           if(DiMem<=65535&&DiMem>=0){
+                               //suma resultado de operando con ContLoc
+                               int cont=Integer.parseInt(ContLoc,16);
+                               DiMem=DiMem*2;
+                               cont=cont+DiMem;
+                               ContLoc=Integer.toHexString(cont).toUpperCase();
+                               Mdir="DTV";
+                           }else{
+                               error.write("Linea: "+lin+" Error:"+codop+" no cumple con el valor requerido (valor actual:"+DiMem+")");
+                               error.newLine();
+                           }
+                          }else{
+                               error.write("Linea: "+lin+" Error: "+codop+" no se encontro um valor");
+                               error.newLine();
+                                  }
+                      }
+                      
+                      
+                  }//Termina de dos Bytes
+                  BanContLoc=1;
+                  
+              }//Termina Directivas  de Reserva de espacio de Memoria 
+              
+              
+                                                                   //ContLoc/////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+         
+         
+         
+         
           //Directo
-          if(Operando.matches("^\\%.+")||Operando.matches("^\\@[0-7]+")||Operando.matches("\\$[0-9A-Fa-f]*")||Operando.matches("^[0-9]+")){
+          if(Operando.matches("^\\%[10]*$")&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\@[0-7]+")&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\$[0-9A-Fa-f]*")&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^[0-9]+")&&BanContLoc!=1&&!codop.equals("ORG"))
+          {
           //DIR
              int DIR=0;
               int tam=Operando.length();
@@ -50,7 +527,7 @@ public class Operando extends Practica4{
               }else{
                   if(Operando.matches("^[0-9]*$")){
                   String dircad=Operando.substring(1,tam);
-                  DIR=Integer.parseInt(dircad,16);  
+                  DIR=Integer.parseInt(dircad,10);  
                   if(DIR>=0||DIR<=255){
                       
                   Mdir="DIR";
@@ -61,61 +538,22 @@ public class Operando extends Practica4{
               
               
               
-              if(Operando.matches("^\\%.+")||Operando.matches("^\\@[0-7]+")||Operando.matches("\\$[0-9A-Fa-f]*")){
+              if(Operando.matches("^\\$[0-9A-Fa-f]*")&&!codop.equals("ORG")||Operando.matches("^\\@[0-7]+")&&!codop.equals("ORG")||Operando.matches("^\\%[10]*$")&&!codop.equals("ORG")){
                   banRel=true;
               
               String dircad=Operando.substring(1,tam);
-              DIR=Integer.parseInt(dircad,16);
+              DIR=Integer.parseInt(dircad,10);
               }
-          if(Operando.matches("\\%.*")){
-              
-             // System.out.println("Binario "+Operando);
-          }else{
-              if(Operando.matches("\\@.*")){
-                  
-                  //System.out.println("Octal "+Operando);
-              }else{
-                  if(Operando.matches("\\$[0-9A-Fa-f]*"))
-                  {
-                      banRel=true;
-                    //  System.out.println("Hexadecimal"+Operando);
-                       String Hexcad=Operando.substring(1,tam);
-                       int EXT=Integer.parseInt(Hexcad,16);
-                       if(EXT>=256){
-                           Mdir="EXT";
-                           if(!Hexcad.matches("^0.*")){
-                       x = EXT;  
-                       y = ~x;   
-                       z = y + 1;
-                       Res=dectohex(z);
-                      }
-                       }
-                  }else{
-                      int op=Integer.parseInt(Operando);
-                      if(op>=256){
-                          if(moddir.equals("DTV")){
-                              Mdir=moddir;
-                          }
-                          else{
-                              Mdir="Ext";
-                              
-                          }
-                      }
-                    //  System.out.println("Decimal"+Operando);
-                  }
-                  
-              }
-              
-          }
           
-          }
+          
+          }//termina Directo
            
           ///////////////////////////////////////////////////Indexados   IDX'S
-          if(Operando.matches("^[-]*([0-9a-dA-D])*^,*([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
+          if(Operando.matches("^[-]*([0-9a-dA-D])*^,*([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1&&!codop.equals("ORG")){
               banRel=true;
               String IDXcad=null;
               StringTokenizer IDX=new StringTokenizer(Operando,",");
-              System.out.println("OperIdx: "+Operando);
+              //System.out.println("OperIdx: "+Operando);
               IDXcad =IDX.nextToken();
               if(IDXcad.matches("[a|A|b|B|d|D]")){
                   Mdir="IDX A";//Acumulador
@@ -152,11 +590,12 @@ public class Operando extends Practica4{
                   error.write("Linea: "+lin+" Error el Operando no cumple los requerimientos para Indexados contiene: "+Operando);
                   error.newLine();
               }
+              
           }
           
           /////////////////////////////////////////////////////////////16 Bits Indirecto
           if(Operando.matches("^\\[[-0-9]*.*")){
-              System.out.println("Operando[]: "+Operando);
+              //System.out.println("Operando[]: "+Operando);
               
           if(Operando.matches("\\[([0-9])*,([X|x|Y|y|sp|SP|pc|PC])*\\]")){
               
@@ -182,18 +621,19 @@ public class Operando extends Practica4{
           }
           
           ////////////////////////////////////////////////////////////Inmediato IMM8, IMM16
-          if(Operando.matches("^#.+")){
+          if(Operando.matches("^#.+")&&BanContLoc!=1&&!codop.equals("ORG")){
               
               int IMM=0;
               int tam=Operando.length();
               String immcad=Operando.substring(1,tam);
               //con base
-              if(immcad.matches("^\\@.*")||immcad.matches("^\\%.*")||immcad.matches("^\\$.*"))
+              
+              if(immcad.matches("^\\@[0-7]+")||immcad.matches("^\\%[10]*")||immcad.matches("^\\$[0-9A-Fa-f]*"))
                 {
                //empieza octal
                if(immcad.matches("^\\@.*")){     
                immcad=Operando.substring(2,tam);
-               IMM =Integer.parseInt(immcad, 16);
+               IMM =Integer.parseInt(immcad, 8);
               
               if(IMM<=255||-256<=IMM){
                   //System.out.println("Entro A imm8");
@@ -225,7 +665,7 @@ public class Operando extends Practica4{
                //entra binario
               if(immcad.matches("^\\%.*")){     
                immcad=Operando.substring(2,tam);
-               IMM =Integer.parseInt(immcad, 16);
+               IMM =Integer.parseInt(immcad, 2);
               
               if(IMM<=255||-256<=IMM){
                   //System.out.println("Entro A imm8");
@@ -287,7 +727,7 @@ public class Operando extends Practica4{
               }
                 }//termina hexadecimal
           }else{//sin base 
-                  IMM =Integer.parseInt(immcad, 16);
+                  IMM =Integer.parseInt(immcad, 10);
                   if(IMM<=255||-256<=IMM){
                   //System.out.println("Entro A imm8");
                       if(moddir.equals("INM")){
@@ -317,20 +757,21 @@ public class Operando extends Practica4{
           }
           
           /////////////////////////////////////////////////////////////////////Relativo REL8 & REL16
-          if(Operando.matches("^[0-9a-zA-Z].*")&&banRel==false||Operando.matches("^\\@.*")&&banRel==false||Operando.matches("^\\%.*")&&banRel==false||Operando.matches("^\\$.*")&&banRel==false){
+          if(Operando.matches("^[0-9a-zA-Z].*")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\@[0-7]+")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\%[10]*$")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\$[0-9A-Fa-f]*")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")){
               int REL=0;
               int tam=Operando.length();
            //  System.out.println("moddir: "+moddir);
-              if(Operando.matches("^\\@.*")||Operando.matches("^\\%.*")||Operando.matches("^\\$.*"))
+              if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$"))
                 {
                     //Entra Octal
                     if(Operando.matches("^\\@.*")){
               String relcad=Operando.substring(1,tam);
-              REL =Integer.parseInt(relcad, 16);
-              if(REL<=255||REL>=-256){
+              REL =Integer.parseInt(relcad, 8);
+              if(REL<=255&&REL>=-256){
                   if(codop.matches("^[lL].*")){
                   if(moddir.equals("REL")){
                       Mdir="REL16";
+                      
                       if(REL>=-256&&REL<=-1){
                        x = REL;  
                        y = ~x;   
@@ -350,9 +791,10 @@ public class Operando extends Practica4{
                    }
                   }
               }
-              else if(codop.matches("^[lL].*")||REL<=65535||REL>=-32768){
+              else if(codop.matches("^[lL].*")&&REL<=65535&&REL>=-32768){
                    if(moddir.equals("REL")){
                       Mdir="REL16";
+                     ;
                       if(REL>=-32768&&REL<=-1){
                        x = REL;  
                        y = ~x;   
@@ -366,8 +808,8 @@ public class Operando extends Practica4{
                   //Empieza Binario
                  if(Operando.matches("^\\%.*")){
               String relcad=Operando.substring(1,tam);
-              REL =Integer.parseInt(relcad, 16);
-              if(REL<=255||REL>=-256){
+              REL =Integer.parseInt(relcad, 2);
+              if(REL<=255&&REL>=-256){
                   if(codop.matches("^[lL].*")){
                   if(moddir.equals("REL")){
                       Mdir="REL16";
@@ -390,7 +832,7 @@ public class Operando extends Practica4{
                    }
                   }
               }
-              else if(codop.matches("^[lL].*")||REL<=65535||REL>=-32768){
+              else if(codop.matches("^[lL].*")&&REL<=65535&&REL>=-32768){
                    if(moddir.equals("REL")){
                       Mdir="REL16";
                       if(REL>=-32768&&REL<=-1){
@@ -406,7 +848,7 @@ public class Operando extends Practica4{
                  if(Operando.matches("^\\$.*")){
               String relcad=Operando.substring(1,tam);
               REL =Integer.parseInt(relcad, 16);
-              if(REL<=255||REL>=-256){
+              if(REL<=255&&REL>=-256){
                   if(codop.matches("^[lL].*")){
                   if(moddir.equals("REL")){
                       Mdir="REL16";
@@ -429,7 +871,7 @@ public class Operando extends Practica4{
                    }
                   }
               }
-              else if(codop.matches("^[lL].*")||REL<=65535||REL>=-32768){
+              else if(codop.matches("^[lL].*")&&REL<=65535&&REL>=-32768){
                    if(moddir.equals("REL")){
                       Mdir="REL16";
                       if(REL>=-32768&&REL<=-1||relcad.matches("^0.*")){
@@ -444,8 +886,8 @@ public class Operando extends Practica4{
                 }//Termina Hexadecimal
                 }else{//sin base
                   if(Operando.matches("^[0-9].*")){
-                  REL =Integer.parseInt(Operando, 16);
-                  if(REL<=255||REL>=-256){
+                  REL =Integer.parseInt(Operando, 10);
+                  if(REL<=255&&REL>=-256){
                     if(codop.matches("^[lL].*")){
                   if(moddir.equals("REL")){
                       Mdir="REL16";
@@ -458,7 +900,7 @@ public class Operando extends Practica4{
                         }
                   }
               }
-              else if(codop.matches("^[lL].*")||REL<=65535||REL>=-32768){
+              else if(codop.matches("^[lL].*")&&REL<=65535&&REL>=-32768){
                    if(moddir.equals("REL")){
                       Mdir="REL16";
                       
@@ -469,6 +911,7 @@ public class Operando extends Practica4{
                      if(Operando.matches("^[a-zA-Z][a-zA-Z]*$")&&codop.matches("^[lL].*")){
                          if(moddir.equals("REL")){
                       Mdir="REL16";
+                      
                           }
                          }
                      else{
@@ -478,49 +921,17 @@ public class Operando extends Practica4{
                      }
                   }
               }
-              //////////////////////////////////////////////////////////ORG
-              if(codop.equals("ORG")&&BanOrg!=1){
-                  int ORG=0;
-                  //Entra Hexadecimal
-                  if(Operando.matches("^\\$.*")){
-                      
-                      int siz=Operando.length();
-                        String Hexa=Operando.substring(1,siz);
-                           ORG=Integer.parseInt(Hexa,16);
-                          if(ORG<=65535){
-                               //inserta el valor en Hexadecimal al Contador Logico
-                              ContLoc=Integer.toHexString(ORG).toUpperCase(); 
-                              BanOrg=1;
-                              }
-                             }else{
-                                  if(Operando.matches("^[0-9]?[0-9]*")){
-                                   ORG=Integer.parseInt(Operando);
-                                   ContLoc=Integer.toHexString(ORG).toUpperCase();
-                                     BanOrg=1; 
-                                  }
-                              else{
-                               error.write("Linea: "+lin+" Error: ORG sobrepasa el valor limite");
-                               error.newLine();
-                                  }
-                          }
-                             
-                  
-                  
-              }
-                 
-              
-              
-              
-              
-          }/////////////////////Termina validacion de Operando
-          
-          
-          if(Mdir=="null"){
+          }
+                        
+          if(Mdir=="null"&&BanContLoc!=1&&!codop.equals("ORG")){
           error.write("Linea: "+lin+" Error no se encontro ningun modo de direccionamiento");
           error.newLine();
           }
-         
-      } 
+         /*
+          if(Mdir!="null"){
+              Byte=Bytes(codop,Mdir);
+              }*/
+      } /////////////////////Termina validacion de Operando
        else{
           
           error.write("Linea: "+lin+" Error el modo de Direccionamiento no es valido");
@@ -534,11 +945,13 @@ public class Operando extends Practica4{
             System.out.println("Hubo un problema en los modos de direccionamiento: "+e);
             
         }
-        System.out.println("Mdir: "+Mdir+"Res op: "+Res);
+        ContLoc=fillContLoc(ContLoc);
+        //System.out.println("Mdir: "+Mdir+"Res op: "+Res);
         Resultado[0]=Mdir;
         Resultado[1]=Res;
-        Resultado[3]=Integer.toString(BanOrg);
-        System.out.println("Mdir: "+Resultado[0]+"Res op: "+Resultado[1]);
+        Resultado[2]=Integer.toString(BanOrg);
+        Resultado[3]=ContLoc;
+        System.out.println(" Mdir: "+Resultado[0]+" Res op: "+Resultado[1]+" Ban ORG: "+Resultado[2]+" ContLoc: "+Resultado[3]);
       return Resultado;
     }
     
@@ -565,6 +978,122 @@ public class Operando extends Practica4{
         String oct = Integer.toOctalString(dec);
         return oct;
     }
-  
+    public String Bytes(String codop, String dir){
+                   String Bytes="null";
+        
+                       String TABOP="TABOP";
+                         String mayus,exCod;
+                          dir.toUpperCase();
+                         try{
+                             FileInputStream fsaux = new FileInputStream(TABOP+".asm");
+                             DataInputStream dsaux = new DataInputStream(fsaux);
+                             BufferedReader  braux = new BufferedReader(new InputStreamReader(dsaux));
+                             
+                             String linaux;
+                             //System.out.println("Tab lin "+linToken);
+                             
+                             while((linaux = braux.readLine())!= null){
+                                 
+                                 StringTokenizer aucod = new StringTokenizer(linaux,"|");
+                                        mayus=codop;
+                                   exCod=aucod.nextToken();
+                                 //  System.out.println("Tabop: "+exCod);
+                                   
+                                   if(exCod.compareTo(mayus.toUpperCase())==0&&mayus!="null"&&mayus!=null&&mayus!=" "){
+                                      
+                                       
+                                       if(codop!="null"&&codop!=null&&codop!=" "){
+                                           
+                                       
+                                   //     System.out.println("Codop comparado "+codop);
+                                       
+                                       
+                                     //  System.out.println("Auxiliar "+linaux);
+                                       
+                                      String   sioperS=aucod.nextToken("|");    //Vrifica si lleva operando
+                                      int  sioperI=Integer.parseInt(sioperS); //convierte de String a Cadena
+                                     String  moddir=aucod.nextToken("|");   //Modo de direccionamiento  
+                                     String  codcal=aucod.nextToken("|");  //Codigo calculado
+                                    String   bytescal=aucod.nextToken("|"); //Bytes calculados
+                                     String  bytesxcal=aucod.nextToken("|");  //Bytes por calcular
+                                     String  totbytes=aucod.nextToken("|");  //Total de bytes
+                            /*           System.out.print("Codop: "+codop);
+                                       System.out.print(" Modo de direccionamiento: "+moddir);
+                                       System.out.print(" Codigo calculado: "+codcal);
+                                       System.out.print(" Bytes calculados: "+bytescal);
+                                       System.out.print(" Bytes por calcular: "+bytesxcal);
+                                       System.out.println(" Total de bytes: "+totbytes);
+                              */       
+                                       if(dir.equals(moddir)){
+                                           Bytes=bytesxcal;
+                                       }
+                           
+                                       }
+                                   }
+                                   
+                                   }
+                             dsaux.close(); 
+                          }catch(Exception r){
+                             System.out.println("Hubo un error en la busqueda de Bytes "+r);
+                         }
+        
+        
+        return Bytes;
+    }
+    public int TabsimCheck(String dir, String Etq){
+        
+        
+                         int compara=0;
+                         String mayus,exEtq;
+                          
+                         try{
+                             FileInputStream fsaux = new FileInputStream(dir+".tds");
+                             DataInputStream dsaux = new DataInputStream(fsaux);
+                             BufferedReader  braux = new BufferedReader(new InputStreamReader(dsaux));
+                             
+                             String linaux;
+                            
+                             
+                             while((linaux = braux.readLine())!= null){
+                                 
+                                 StringTokenizer aucod = new StringTokenizer(linaux,"|");
+                                        mayus=Etq;
+                                   exEtq=aucod.nextToken();
+                                 
+                                   
+                                   if(exEtq.toUpperCase().compareTo(mayus.toUpperCase())==0&&mayus!="null"&&mayus!=null&&mayus!=" "){
+              
+                                       compara=1;
+                                   }
+                                   
+                                   }
+                             dsaux.close(); 
+                          }catch(Exception r){
+                             System.out.println("Hubo un error en la busqueda de Tabsim "+r);
+                         }
+        
+        
+        return compara;
+    }
     
-}
+    public String fillContLoc(String ContLoc){
+        
+        int size =ContLoc.length();
+        switch(size){
+            
+            case 1: 
+                ContLoc="000"+ContLoc;
+                break;
+            case 2:
+                ContLoc="00"+ContLoc;
+                break;
+            case 3:
+                ContLoc="0"+ContLoc;
+            case 4:
+                break;
+        }
+          return ContLoc;      
+        }
+        
+    }
+
