@@ -516,37 +516,114 @@ public class Operando extends Practica4{
          
          
          
-          //Directo
+          //Directo y Extendifo
           if(Operando.matches("^\\%[10]*$")&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\@[0-7]+")&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\$[0-9A-Fa-f]*")&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^[0-9]+")&&BanContLoc!=1&&!codop.equals("ORG"))
           {
           //DIR
+              boolean banDir=false;
              int DIR=0;
-              int tam=Operando.length();
-              if(moddir.equals("DTV")){
-                  Mdir=moddir;
+              ///////////////////////////////////////////////Directo
+              if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[-]*[0-7]*")||Operando.matches("^\\%[10]*")){
+                  
+                  //Hexadecimal
+                  if(Operando.matches("^\\$[0-9A-Fa-f]*")){
+                      int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  DIR=Integer.parseInt(dircad,16);  
+                  if(DIR>=0&&DIR<=255){
+                     banDir=true; 
+                  Mdir="DIR";
+                  }
+                  }//termina Hexadecimal
+                  //Octal
+                  if(Operando.matches("^\\@[-]*[0-7]*")){
+                      int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  DIR=Integer.parseInt(dircad,8);  
+                  if(DIR>=0&&DIR<=255){ 
+                  Mdir="DIR";
+                  }
+                  banDir=true;
+                  }//termina Octal
+                  //entra Binario
+                  if(Operando.matches("^\\%[10]*")){
+                      int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  DIR=Integer.parseInt(dircad,2);  
+                  if(DIR>=0&&DIR<=255){
+                      banDir=true;
+                  Mdir="DIR";
+                  }
+                  }//termina binario
               }else{
+              
                   if(Operando.matches("^[0-9]*$")){
+                  int tam=Operando.length();
                   String dircad=Operando.substring(1,tam);
                   DIR=Integer.parseInt(dircad,10);  
-                  if(DIR>=0||DIR<=255){
-                      
+                  if(DIR>=0&&DIR<=255){
+                   banDir=true;   
                   Mdir="DIR";
                   
                   }
                   }
+                  
+              }
+              
+              ///////////////////////////////////////////Extendido
+              int EXT=0;
+              if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[-]*[0-7]*")||Operando.matches("^\\%[10]*")){
+                  
+                  //Hexadecimal
+                  if(Operando.matches("^\\$[0-9A-Fa-f]*")){
+                      int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  EXT=Integer.parseInt(dircad,16);  
+                  if(EXT>=-32768&&EXT<=65535&&!banDir==true){
+                      
+                  Mdir="EXT";
+                  }
+                  }//termina Hexadecimal
+                  //Octal
+                  if(Operando.matches("^\\@[-]*[0-7]*")){
+                      int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  EXT=Integer.parseInt(dircad,8);  
+                  if(EXT>=-32768&&EXT<=65535&&!banDir==true){ 
+                  Mdir="EXT";
+                  }
+                  
+                  }//termina Octal
+                  //entra Binario
+                  if(Operando.matches("^\\%[10]*")){
+                      int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  EXT=Integer.parseInt(dircad,2);  
+                  if(EXT>=-32768&&EXT<=65535&&!banDir==true){
+                     
+                  Mdir="EXT";
+                  }
+                  }//termina binario
+              }else{
+              
+                  if(Operando.matches("^[0-9]*$")){
+                  int tam=Operando.length();
+                  String dircad=Operando.substring(1,tam);
+                  EXT=Integer.parseInt(dircad,10);  
+                  if(EXT>=-32768&&EXT<=65535&&!banDir==true){
+                     
+                  Mdir="EXT";
+                  
+                  }
+                  }
+                  
               }
               
               
               
-              if(Operando.matches("^\\$[0-9A-Fa-f]*")&&!codop.equals("ORG")||Operando.matches("^\\@[0-7]+")&&!codop.equals("ORG")||Operando.matches("^\\%[10]*$")&&!codop.equals("ORG")){
-                  banRel=true;
-              
-              String dircad=Operando.substring(1,tam);
-              DIR=Integer.parseInt(dircad,10);
-              }
           
           
-          }//termina Directo
+          }//termina Directo y Extendido
            
           ///////////////////////////////////////////////////Indexados   IDX'S
           if(Operando.matches("^[-]*([0-9a-dA-D])*^,*([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1&&!codop.equals("ORG")){
@@ -628,7 +705,7 @@ public class Operando extends Practica4{
               String immcad=Operando.substring(1,tam);
               //con base
               
-              if(immcad.matches("^\\@[0-7]+")||immcad.matches("^\\%[10]*")||immcad.matches("^\\$[0-9A-Fa-f]*"))
+              if(immcad.matches("^\\@[-]*[0-7]+")||immcad.matches("^\\%[10]*")||immcad.matches("^\\$[0-9A-Fa-f]*"))
                 {
                //empieza octal
                if(immcad.matches("^\\@.*")){     
@@ -727,6 +804,7 @@ public class Operando extends Practica4{
               }
                 }//termina hexadecimal
           }else{//sin base 
+                  if(Operando.matches("^[0-9a-zA-Z].*")){
                   IMM =Integer.parseInt(immcad, 10);
                   if(IMM<=255||-256<=IMM){
                   //System.out.println("Entro A imm8");
@@ -753,8 +831,12 @@ public class Operando extends Practica4{
                       }
                       }
                   }
+              }else{
+                      error.write("Linea: "+lin+" Error "+codop+" no cumple los requerimientos contiene: "+Operando);
+                                 error.newLine();
+                  }
               }
-          }
+          }//termina Inmediato
           
           /////////////////////////////////////////////////////////////////////Relativo REL8 & REL16
           if(Operando.matches("^[0-9a-zA-Z].*")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\@[0-7]+")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\%[10]*$")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")||Operando.matches("^\\$[0-9A-Fa-f]*")&&banRel==false&&BanContLoc!=1&&!codop.equals("ORG")){
