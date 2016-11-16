@@ -165,6 +165,7 @@ public class Practica4 {
                                    exCod=aucod.nextToken();
                                  //  System.out.println("Tabop: "+exCod);
                                    errtab=true;
+                                  // System.out.println("excod "+exCod+" mayus"+mayus);
                                    if(exCod.compareTo(mayus.toUpperCase())==0&&mayus!="null"&&mayus!=null&&mayus!=" "){
                                        errtab=false;
                                        codop=linToken;
@@ -191,7 +192,7 @@ public class Practica4 {
                                        System.out.print(" Bytes por calcular: "+bytesxcal);
                                        System.out.println(" Total de bytes: "+totbytes);
                               */       
-                                       
+                                     //  System.out.println("Codop "+codop+" Operando"+moddir);
                                            dircod=codop+a;
                                            if(dircod!="null.asm")
                                            {
@@ -201,12 +202,15 @@ public class Practica4 {
                                            if(moddir.equals("INH")){
                                                modosdir.write(moddir+" ");
                                                operval=1;
+                                              // System.out.println("Codop "+codop+" Operando"+moddir);
                                            }
                                            if(moddir.equals("INM")&&sioperI==0){
                                                modosdir.write(moddir+" ");
                                                operval=1;
+                                               moddir="INM";
                                            }
                                            if(!moddir.equals("INM")||!moddir.equals("REL")){
+                                               //System.out.println("Operando "+moddir);
                                                moddir="null";
                                            }
                                            modosdir.close();
@@ -218,7 +222,7 @@ public class Practica4 {
                                    
                              }
                              dsaux.close(); 
-                             //System.out.println("Tapop ORG? "+codop+"Operando "+moddir);
+                            // System.out.println("Tapop ORG? "+codop+"Operando "+moddir);
                          }catch(Exception r){
                              System.out.println("Hubo un error en el Tabop "+r);
                          }
@@ -257,12 +261,12 @@ public class Practica4 {
                                      operando=linToken;
                                  //    System.out.println("Operando  "+operando);
                                     
-                                    Resultado = op.Direccion(operando,dir,c,moddir,codop, operval,BanOrg, ContLoc);
+                                    Resultado = op.Direccion(operando,dir,c,moddir,codop,BanOrg, ContLoc);
                                     Mdir=Resultado[0];
                                     Res=Resultado[1];
                                     BanOrg=Integer.parseInt(Resultado[2]);
                                     ContLoc=Resultado[3];
-                                     //System.out.println("Modo de direccion "+Mdir);
+                                    // System.out.println("Modo de direccion "+Mdir);
                                      
                                      if(codop.equals(" ")){
                                          
@@ -298,14 +302,14 @@ public class Practica4 {
                                          if(linToken.matches("^[a-zA-Z]{1,8}[^;]{0,1}[\\w]$")&&banCom==false&&codop!=linToken)
                                          {
                                              
-                                            System.out.println("Lin token eti: "+linToken+"   "+poslin);
+                                           // System.out.println("Lin token eti: "+linToken+"   "+poslin);
                                            // etiqueta=linToken;
-                                            /*if(poslin!=0&&thisLine.charAt(poslin)!=' '&&poslin>2)
+                                            if(poslin!=0&&thisLine.charAt(poslin)!=' '&&poslin>2)
                                             {
                                               System.out.println("com pos"+thisLine.charAt(poslin)+"Npos "+poslin);
                                                exEt=thisLine.substring(0,poslin);
                                               System.out.println("Etiqueta "+exEt);
-                                            }*/
+                                            }
                                             
                                             //System.out.println("Et despues! "+exEt);
                                            //if(linToken.equals(exEt)){
@@ -425,7 +429,7 @@ public class Practica4 {
                       DataInputStream inputcod2 = new DataInputStream(fcod2);
                       BufferedReader brcod2 = new BufferedReader(new InputStreamReader(inputcod2));
                       codoplin=brcod2.readLine();//imprime los modos de direccionamiento
-                  
+                      //System.out.println("Modo de direccion "+Mdir);
                       if(Mdir!=null){
                           codoplin=Mdir;
                       }
@@ -433,11 +437,11 @@ public class Practica4 {
                       if(Res!="null"){
                      //inserta resultado de Operando 
                       operando=Res;
-                 // System.out.println(c+"  ee  "+etiqueta+"  cc  "+codop+"  oo  "+operando+"      "+codoplin);
+                  System.out.println(c+"  co  "+ContLoc+"  ee  "+etiqueta+"  cc  "+codop+"  oo  "+operando+"      "+codoplin);
                   instrucciones.write(c+"      "+ContLoc+"      "+etiqueta+"      "+codop+"      "+operando+"      "+codoplin);
                   instrucciones.newLine();
                       }else{
-                      //  System.out.println(c+"  ee  "+etiqueta+"  cc  "+codop+"  oo  "+operando+"      "+codoplin);
+                  System.out.println(c+"  co  "+ContLoc+"  ee  "+etiqueta+"  cc  "+codop+"  oo  "+operando+"      "+codoplin);
                   instrucciones.write(c+"      "+ContLoc+"      "+etiqueta+"      "+codop+"      "+operando+"      "+codoplin);
                   instrucciones.newLine();  
                       }
