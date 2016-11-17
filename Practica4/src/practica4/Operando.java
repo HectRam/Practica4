@@ -627,40 +627,156 @@ public class Operando extends Practica4{
            
           ///////////////////////////////////////////////////Indexados   IDX'S
                               
-          if(Operando.matches("^[-]*([0-9a-dA-D])*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1){
+          if(Operando.matches("^[-]*([0-9a-dA-D])*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*([+|-])*$")&&BanContLoc!=1||Operando.matches("^\\$[0-9A-Fa-f]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1||Operando.matches("^\\@[-]*[0-7]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1||Operando.matches("^\\%[10]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1)
+          {
               banRel=true;
-              String IDXfirst=null,IDXcad=null;
+              String IDXcad=null;
               
               StringTokenizer IDX=new StringTokenizer(Operando,",");
+              
+               System.out.println("Operando: "+Operando+"Cadena IDX "+IDXcad);
+              if(Operando.matches("^\\$[0-9A-Fa-f]*.*")||Operando.matches("^\\@[-]*[0-7]*.*")||Operando.matches("^\\%[10]*.*")){
+                
+                  //Entra Hexadecimal
+                  if(Operando.matches("^\\$[0-9A-Fa-f]*.*")){
+                      IDXcad =IDX.nextToken();
+                      int Hex=Operando.length();
+                  String IDXcade=IDXcad.substring(1,Hex);
+                  // IDXcad =IDX.nextToken();
+                  
              // IDXfirst=IDX.nextToken();
-              IDXcad =IDX.nextToken();
-              if(IDXcad.matches("[a|A|b|B|d|D]")){
-                  Mdir="IDX A";//Acumulador
+              
+              if(IDXcade.matches("[a|A|b|B|d|D]")){
+                  Mdir="IDXA";//Acumulador
               }
-              System.out.println("OperIdx: "+Operando+"Cadena IDX "+IDXcad);
-              if(IDXcad.matches("^[-]?[0-9]")){
+             
+              if(IDXcade.matches("^[-]?[0-9]")){
                   banRel=true;
-                  //contienen Decimales
-                  int val=0;
-                  val=Integer.parseInt(IDXcad);
+                  
+                  int IDXint=Integer.parseInt(IDXcade,16);
                    // IDX 5Bits
-                 if(val>=-16&&val<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
+                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*([+|-])*$")){
                      
-                     Mdir="IDX";
+                     Mdir="IDX5Bits";
                  }
                  //IDX 9 Bits
-                 if(val>=-256&&val<=-17||val>=16&&val<=255){
+                 if(IDXint>=-256&&IDXint<=-17||IDXint>=16&&IDXint<=255){
                      Mdir="IDX1";
                      
                  }
                  //IDX 16Bits
-                 if(val<=-257&&val>=-32768||val>=256&&val<=65535){
+                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
                      Mdir="IDX2";
                  }
                  
                  
-              }else{
-                  //Contiene Decimal
+              }
+                  }//termina Hexadecimal
+                  //Entra Octal
+                   if(Operando.matches("^\\@[-]*[0-7]*.*")){
+                       IDXcad =IDX.nextToken();
+                       int val=Operando.length();
+                   String IDXcade=IDXcad.substring(1,val);
+                  // IDXcad =IDX.nextToken();
+                
+                      
+             // IDXfirst=IDX.nextToken();
+              
+              if(IDXcade.matches("[a|A|b|B|d|D]")){
+                  Mdir="IDXA";//Acumulador
+              }
+             
+              if(IDXcade.matches("^[-]?[0-9]")){
+                  banRel=true;
+                  int  IDXint=Integer.parseInt(IDXcade,8); 
+                 
+                   // IDX 5Bits
+                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
+                     
+                     Mdir="IDX5Bits";
+                 }
+                 //IDX 9 Bits
+                 if(IDXint>=-256&&val<=-17||IDXint>=16&&IDXint<=255){
+                     Mdir="IDX1";
+                     
+                 }
+                 //IDX 16Bits
+                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                     Mdir="IDX2";
+                 }
+                 
+                 
+              }
+              }//termina octal
+                   //Entra Binario
+                if(Operando.matches("^\\%[10]*.*")){
+                    IDXcad =IDX.nextToken();
+                       int val=Operando.length();
+                 String  IDXcade=IDXcad.substring(1,val);
+                  // IDXcad =IDX.nextToken();
+                  
+                      
+             // IDXfirst=IDX.nextToken();
+              
+              if(IDXcade.matches("[a|A|b|B|d|D]")){
+                  Mdir="IDXA";//Acumulador
+              }
+             
+              if(IDXcade.matches("^[-]?[0-9]")){
+                  banRel=true;
+                  int IDXint=Integer.parseInt(IDXcade,2);
+                 
+                   // IDX 5Bits
+                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
+                     
+                     Mdir="IDX5Bits";
+                 }
+                 //IDX 9 Bits
+                 if(IDXint>=-256&&val<=-17||IDXint>=16&&IDXint<=255){
+                     Mdir="IDX1";
+                     
+                 }
+                 //IDX 16Bits
+                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                     Mdir="IDX2";
+                 }
+
+               }
+              }//termina Binario   
+              }if(Operando.matches("^[-]*([0-9a-dA-D])*,.*")){//Sin base
+                  
+                String   IDXcade=IDX.nextToken();
+                   
+                 
+             // IDXfirst=IDX.nextToken();
+              
+              if(IDXcade.matches("[a|A|b|B|d|D]")){
+                  Mdir="IDXA";//Acumulador
+              }
+             
+              if(IDXcade.matches("^[-]?[0-9]")){
+                  banRel=true;
+                  int  IDXint=Integer.parseInt(IDXcade);
+                  //contienen Decimales
+                  
+                   // IDX 5Bits
+                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
+                     
+                     Mdir="IDX5Bits";
+                 }
+                 //IDX 9 Bits
+                 if(IDXint>=-256&&IDXint<=-17||IDXint>=16&&IDXint<=255){
+                     Mdir="IDX1";
+                     
+                 }
+                 //IDX 16Bits
+                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                     Mdir="IDX2";
+                 }
+                 
+                 
+                }else{
+                 
                   if(Operando.matches(",([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
                       Mdir="IDX";
                       
@@ -669,9 +785,8 @@ public class Operando extends Practica4{
                   error.newLine();
               }
               }
-              
-              
-          }
+             }//termina sin base
+          }//termina IDX
           
           /////////////////////////////////////////////////////////////16 Bits Indirecto
           if(Operando.matches("^\\[[-0-9]*.*")){
@@ -1038,7 +1153,7 @@ public class Operando extends Practica4{
         Resultado[1]=Res;
         Resultado[2]=Integer.toString(BanOrg);
         Resultado[3]=ContLoc;
-        System.out.println(" Mdir: "+Resultado[0]+" Res op: "+Resultado[1]+" Ban ORG: "+Resultado[2]+" ContLoc: "+Resultado[3]);
+       //System.out.println(" Mdir: "+Resultado[0]+" Res op: "+Resultado[1]+" Ban ORG: "+Resultado[2]+" ContLoc: "+Resultado[3]);
       return Resultado;
     }
     
