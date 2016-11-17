@@ -139,7 +139,7 @@ public class Practica4 {
                          /**
                          * Entra Codop
                          */
-                                if(linToken.matches("[a-zA-Z]{1,4}(?!\\d )[/.]{0,1}[a-zA-Z]$")&&banCom==false){
+                                if(linToken.matches("[a-zA-Z]{2,4}(?!\\d )[/.]{0,1}[a-zA-Z]$")&&banCom==false){
                          /**
                           *Inicia practica 2
                           */
@@ -166,7 +166,7 @@ public class Practica4 {
                                  //  System.out.println("Tabop: "+exCod);
                                    errtab=true;
                                   // System.out.println("excod "+exCod+" mayus"+mayus);
-                                   if(exCod.compareTo(mayus.toUpperCase())==0&&mayus!="null"&&mayus!=null&&mayus!=" "){
+                                   if(exCod.compareTo(linToken.toUpperCase())==0/*&&mayus!="null"&&mayus!=null&&mayus!=" "*/){
                                        errtab=false;
                                        codop=linToken;
                                        
@@ -229,15 +229,16 @@ public class Practica4 {
                          //Etiqueta alterna
                          
                          //etiqueta="null";
-                         codopprue=linToken;
-                         if(codopprue.matches("^[a-z]{1,4}")&&!"equ".equals(codopprue)&&espacio==false&&codopprue!=codop){
+                        // codopprue=linToken;
+                         if(linToken.matches("^[a-z]{0,4}")&&!"equ".equals(linToken)&&espacio==false&&linToken!=codop){
                              
-                            etiqueta=codopprue;
+                            etiqueta=linToken;
+                            System.out.println("Alterna linToken"+linToken);
                            // System.out.println("Eticod: "+codopprue);
-                              codopprue="null";
+                              //codopprue="null";
                               banEt=true;
-                        }//termina practica 2
-                         }
+                        }
+                         }//termina practica 2
                                 
                                 /**
                                   * Entra Operando
@@ -294,34 +295,40 @@ public class Practica4 {
                                      if(espacio==false)
                                      {     
                                            // thisLine.split(";");
+                                        
                                          pos=0;
                                          exEt=" "; 
-                                     
-                                        // exEt=thisLine.substring(0,pos);
-                                        // System.out.println("Pos "+pos);
-                                         if(linToken.matches("^[a-zA-Z]{1,8}[^;]{0,1}[\\w]$")&&banCom==false&&codop!=linToken)
+                                         int p=0;
+                                         System.out.println("Print linToken "+linToken);
+                                       /*  pos=linToken.trim().indexOf(' ');
+                                        exEt=thisLine.substring(0,pos);
+                                        System.out.println("Pos "+pos+"exEt"+exEt);*/
+                                         if(linToken.matches("^[a-zA-Z]{0,8}[^;]{0,1}[\\w]$")&&banCom==false&&codop!=linToken)
                                          {
+                                            p=linToken.trim().length();
+                                            System.out.println("Print linToken inside"+linToken);
+                                            
+                                            //System.out.println("Lin token eti: "+linToken+" Pos  "+poslin+"P"+p);
+                                            /*if(p<=7){
                                              
-                                           // System.out.println("Lin token eti: "+linToken+"   "+poslin);
                                            // etiqueta=linToken;
-                                            if(poslin!=0&&thisLine.charAt(poslin)!=' '&&poslin>2)
+                                           if(poslin!=0&&thisLine.charAt(poslin)!=' '&&poslin>2)
                                             {
                                               System.out.println("com pos"+thisLine.charAt(poslin)+"Npos "+poslin);
-                                               exEt=thisLine.substring(0,poslin);
+                                               exEt=thisLine.trim().substring(0,poslin);
                                               System.out.println("Etiqueta "+exEt);
                                             }
-                                            
+                                            }*/
                                             //System.out.println("Et despues! "+exEt);
                                            //if(linToken.equals(exEt)){
                                                
-                                               etiqueta=linToken;
-                                             //  System.out.println("etiqueta  "+etiqueta);
-                                               
-                                               
-                                              
-                                          //}      
+                                               etiqueta=linToken.trim();
+                                               /*System.out.println("Print linToken "+linToken);
+                                               System.out.println("Print etiqueta  "+etiqueta);*/
+                                              //System.out.println("TRIM  "+etiqueta);
   
-                                         
+                                          //}      
+
                                      }
                                       
                                      }
@@ -396,29 +403,13 @@ public class Practica4 {
                                  error.newLine();
                                  errBan=true;
                              }
-                  ///////////////Validacion de etiqueta y Operando en EQU
-                  if(codop.equals("EQU")&&etiqueta!="null"&&operando!="null"&&errBan==false){
-                     // System.out.println("Codop Equ: tronador04"+codop);
-                      compara= op.TabsimCheck(dir,etiqueta);
-                      if(compara==0){
-                      tabsim.write(etiqueta+"|"+ContLoc);
-                      tabsim.newLine();
-                      } 
-                  }
-                  if(codop!="null"&&etiqueta!="null"&&operando!="null"&&errBan==false){
-                     // System.out.println("Codop Equ: tronador04"+codop);
-                      compara= op.TabsimCheck(dir,etiqueta);
-                      if(compara==0){
-                      tabsim.write(etiqueta+"|"+ContLoc);
-                      tabsim.newLine();
-                      } 
-                  }
+                  
                   /////////registro de etiqueta en Tabsim
                   if(etiqueta!="null"){
                       
                   }
                      ///Inserta datos
-                     if(banCod==1&&errBan==false&&compara==0){
+                     if(banCod==1&&errBan==false/*&&compara==0*/){
                       
                      samecod2=codop+a;
                      //System.out.println("codop arch: "+samecod2);
@@ -429,11 +420,20 @@ public class Practica4 {
                       DataInputStream inputcod2 = new DataInputStream(fcod2);
                       BufferedReader brcod2 = new BufferedReader(new InputStreamReader(inputcod2));
                       codoplin=brcod2.readLine();//imprime los modos de direccionamiento
-                      //System.out.println("Modo de direccion "+Mdir);
+                      System.out.println("Modo de direccion "+Mdir);
                       if(Mdir!=null){
                           codoplin=Mdir;
                       }
                       if(codoplin!="null"){
+                        if(codop!="null"&&etiqueta!="null"&&operando!="null"&&errBan==false&&banCod==1){
+                     // System.out.println("Codop Equ: tronador04"+codop);
+                      compara= op.TabsimCheck(dir,etiqueta);
+                      if(compara==0){
+                      tabsim.write(etiqueta+"|"+ContLoc);
+                      tabsim.newLine();
+                      } 
+                      }
+                       // if(compara==0){
                       if(Res!="null"){
                      //inserta resultado de Operando 
                       operando=Res;
@@ -445,6 +445,17 @@ public class Practica4 {
                   instrucciones.write(c+"      "+ContLoc+"      "+etiqueta+"      "+codop+"      "+operando+"      "+codoplin);
                   instrucciones.newLine();  
                       }
+                       // }
+                      ///////////////Validacion de etiqueta y Operando en EQU
+                  /*if(codop.equals("EQU")&&etiqueta!="null"&&operando!="null"&&errBan==false&&banCod==1){
+                     // System.out.println("Codop Equ: tronador04"+codop);
+                      compara= op.TabsimCheck(dir,etiqueta);
+                      if(compara==0){
+                      tabsim.write(etiqueta+"|"+ContLoc);
+                      tabsim.newLine();
+                      } 
+                  }*/
+                  
                       }
                       
                       
@@ -484,8 +495,9 @@ public class Practica4 {
                      Mdir=null;
                      operval=0;
                      compara=0;
-                     if(codop.equals("END")||codop.equals("End")||codop.equals("end")){//verifica si tiene End
+                     if(linToken.matches(".*END.*")||linToken.matches(".*End.*")||linToken.matches(".*end.*")){//verifica si tiene End
                            banEnd = true;
+                           System.out.println("Entro End");
                        }
                       
                     }
