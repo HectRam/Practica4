@@ -299,14 +299,14 @@ public class Practica4 {
                                          pos=0;
                                          exEt=" "; 
                                          int p=0;
-                                         System.out.println("Print linToken "+linToken);
+                                        // System.out.println("Print linToken "+linToken);
                                        /*  pos=linToken.trim().indexOf(' ');
                                         exEt=thisLine.substring(0,pos);
                                         System.out.println("Pos "+pos+"exEt"+exEt);*/
                                          if(linToken.matches("^[a-zA-Z]{0,8}[^;]{0,1}[\\w]$")&&banCom==false&&codop!=linToken)
                                          {
                                             p=linToken.trim().length();
-                                            System.out.println("Print linToken inside"+linToken);
+                                            //System.out.println("Print linToken inside"+linToken);
                                             
                                             //System.out.println("Lin token eti: "+linToken+" Pos  "+poslin+"P"+p);
                                             /*if(p<=7){
@@ -420,7 +420,7 @@ public class Practica4 {
                       DataInputStream inputcod2 = new DataInputStream(fcod2);
                       BufferedReader brcod2 = new BufferedReader(new InputStreamReader(inputcod2));
                       codoplin=brcod2.readLine();//imprime los modos de direccionamiento
-                      System.out.println("Modo de direccion "+Mdir);
+                     // System.out.println("Modo de direccion "+Mdir);
                       if(Mdir!=null){
                           codoplin=Mdir;
                       }
