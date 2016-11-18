@@ -37,14 +37,15 @@ public class Operando extends Practica4{
         BufferedWriter error=new BufferedWriter(fw);
         
            // System.out.println("Codop antes: "+codop);
-      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%.*")||Operando.matches("^\\#.*")||Operando.matches("^[0-9]+")||Operando.matches("^[a-zA-Z]+")||Operando.matches("^\\[.*")||Operando.matches("^\\-.*")||Operando.matches("^\\,.*")){
+           System.out.println("Operando mod antes: "+Operando);
+      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7].*")||Operando.matches("^\\%.*")||Operando.matches("^\\#.*")||Operando.matches("^[0-9].*")||Operando.matches("^[a-zA-Z].*")||Operando.matches("^\\[.*\\]$")||Operando.matches("^\\-.*")||Operando.matches("^\\,.*")){
           /*   
           
         */  
          codop.toUpperCase();
           //System.out.println("Codop mod: "+codop);
          // System.out.println("A2: "+z);
-         System.out.println("Operando mod: "+Operando);
+         System.out.println("Operando mod Despues: "+Operando);
          
          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                /////////////////////////////////////////////////////ContLoc
@@ -627,153 +628,189 @@ public class Operando extends Practica4{
            
           ///////////////////////////////////////////////////Indexados   IDX'S
                               
-          if(Operando.matches("^[-]*([0-9a-dA-D])*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*([+|-])*$")&&BanContLoc!=1||Operando.matches("^\\$[0-9A-Fa-f]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1||Operando.matches("^\\@[-]*[0-7]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1||Operando.matches("^\\%[10]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1)
+          if(Operando.matches("^[-]*([0-9a-dA-D])*,[+|-]*([X|x|Y|y|sp|SP|pc|PC])*$")&&BanContLoc!=1||Operando.matches("^[-]*([0-9a-dA-D])*,([X|x|Y|y|sp|SP|pc|PC])*([+|-])*$")&&BanContLoc!=1||Operando.matches("^\\$[0-9A-Fa-f]*,([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1||Operando.matches("^\\$[0-9A-Fa-f]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*$")&&BanContLoc!=1||Operando.matches("^\\@[-]*[0-7]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*$")&&BanContLoc!=1||Operando.matches("^\\@[-]*[0-7]*,([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1||Operando.matches("^\\%[10]*,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*$")&&BanContLoc!=1||Operando.matches("^\\%[10]*,([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&BanContLoc!=1)
           {
               banRel=true;
               String IDXcad=null;
               
               StringTokenizer IDX=new StringTokenizer(Operando,",");
               
-               System.out.println("Operando: "+Operando+"Cadena IDX "+IDXcad);
-              if(Operando.matches("^\\$[0-9A-Fa-f]*.*")||Operando.matches("^\\@[-]*[0-7]*.*")||Operando.matches("^\\%[10]*.*")){
+               System.out.println("Operando IDX: "+Operando);
+              if(Operando.matches("^\\$[0-9A-Fa-f]*.*")||Operando.matches("^\\@[-]*[0-7]*.*")||Operando.matches("^\\%.*")){
                 
                   //Entra Hexadecimal
                   if(Operando.matches("^\\$[0-9A-Fa-f]*.*")){
                       IDXcad =IDX.nextToken();
-                      int Hex=Operando.length();
+                      int Hex=IDXcad.length();
                   String IDXcade=IDXcad.substring(1,Hex);
                   // IDXcad =IDX.nextToken();
-                  
+              boolean IDXB=false;    
              // IDXfirst=IDX.nextToken();
               
-              if(IDXcade.matches("[a|A|b|B|d|D]")){
+              if(Operando.matches("^[aAbBdD],[XxYyspSPpcPC]*")){
                   Mdir="IDXA";//Acumulador
+                  IDXB=true;
+                  
               }
              
-              if(IDXcade.matches("^[-]?[0-9]")){
-                  banRel=true;
+              if(IDXcade.matches("^[-]?[0-9].*")&&IDXB==false){
                   
-                  int IDXint=Integer.parseInt(IDXcade,16);
+                  int  IDXint=Integer.parseInt(IDXcade,16);
+                  //contienen Decimales
+                  
                    // IDX 5Bits
-                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*([+|-])*$")){
-                     
+                 if(IDXint>=-16&&IDXint<=15&&IDXB==false||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&IDXB==false){
+                     IDXB=true;
                      Mdir="IDX5Bits";
                  }
                  //IDX 9 Bits
-                 if(IDXint>=-256&&IDXint<=-17||IDXint>=16&&IDXint<=255){
+                 if(IDXint>=-256&&IDXint<=-17&&IDXB==false||IDXint>=16&&IDXint<=255&&IDXB==false){
                      Mdir="IDX1";
-                     
+                     IDXB=true;
                  }
                  //IDX 16Bits
-                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                 if(IDXint<=-257&&IDXint>=-32768&&IDXB==false||IDXint>=256&&IDXint<=65535&&IDXB==false){
                      Mdir="IDX2";
+                     IDXB=true;
+                 }
+                 if(Operando.matches("[0-9]*,([+|-])*([X|x|Y|y|sp|SP])*[+|-]*$")&&IDXB==false){
+                     
+                     Mdir="IDX Pre/Post";
+                     //System.out.println("Mdir Pre/Post: "+Mdir);
                  }
                  
-                 
-              }
+                }
                   }//termina Hexadecimal
                   //Entra Octal
                    if(Operando.matches("^\\@[-]*[0-7]*.*")){
                        IDXcad =IDX.nextToken();
-                       int val=Operando.length();
+                       int val=IDXcad.length();
                    String IDXcade=IDXcad.substring(1,val);
                   // IDXcad =IDX.nextToken();
                 
-                      
+              boolean IDXB=false;    
              // IDXfirst=IDX.nextToken();
               
-              if(IDXcade.matches("[a|A|b|B|d|D]")){
+              if(Operando.matches("^[aAbBdD],[XxYyspSPpcPC]*")){
                   Mdir="IDXA";//Acumulador
+                  IDXB=true;
+                  
               }
              
-              if(IDXcade.matches("^[-]?[0-9]")){
+              if(IDXcade.matches("^[-]?[0-9].*")&&IDXB==false){
                   banRel=true;
-                  int  IDXint=Integer.parseInt(IDXcade,8); 
-                 
+                  int  IDXint=Integer.parseInt(IDXcade,8);
+                  //contienen Decimales
+                  
                    // IDX 5Bits
-                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
-                     
+                 if(IDXint>=-16&&IDXint<=15&&IDXB==false||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&IDXB==false){
+                     IDXB=true;
                      Mdir="IDX5Bits";
                  }
                  //IDX 9 Bits
-                 if(IDXint>=-256&&val<=-17||IDXint>=16&&IDXint<=255){
+                 if(IDXint>=-256&&IDXint<=-17&&IDXB==false||IDXint>=16&&IDXint<=255&&IDXB==false){
                      Mdir="IDX1";
-                     
+                     IDXB=true;
                  }
                  //IDX 16Bits
-                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                 if(IDXint<=-257&&IDXint>=-32768&&IDXB==false||IDXint>=256&&IDXint<=65535&&IDXB==false){
                      Mdir="IDX2";
+                     IDXB=true;
+                 }
+                 if(Operando.matches("[0-9]*,([+|-])*([X|x|Y|y|sp|SP])*[+|-]*$")&&IDXB==false){
+                     
+                     Mdir="IDX Pre/Post";
+                     //System.out.println("Mdir Pre/Post: "+Mdir);
                  }
                  
-                 
-              }
+                }
               }//termina octal
                    //Entra Binario
-                if(Operando.matches("^\\%[10]*.*")){
+                if(Operando.matches("^\\%.*")){
+                   
                     IDXcad =IDX.nextToken();
-                       int val=Operando.length();
+                     
+                       int val=IDXcad.length();
+                       System.out.println("Operando: "+Operando+"Cadena IDX "+IDXcad+"Val: "+val);
                  String  IDXcade=IDXcad.substring(1,val);
+                 System.out.println("Operando2: "+IDXcade);
                   // IDXcad =IDX.nextToken();
                   
-                      
+            boolean IDXB=false;    
              // IDXfirst=IDX.nextToken();
               
-              if(IDXcade.matches("[a|A|b|B|d|D]")){
+              if(Operando.matches("^[aAbBdD],[XxYyspSPpcPC]*")){
                   Mdir="IDXA";//Acumulador
+                  IDXB=true;
               }
              
-              if(IDXcade.matches("^[-]?[0-9]")){
+              if(Operando.matches("^\\%.*")&&IDXB==false){
                   banRel=true;
-                  int IDXint=Integer.parseInt(IDXcade,2);
+                  System.out.println("Operando: "+Operando+"Cadena IDX "+IDXcade);
+                  int  IDXint=Integer.parseInt(IDXcade,2);
                  
+                  
                    // IDX 5Bits
-                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
-                     
+                 if(IDXint>=-16&&IDXint<=15&&IDXB==false||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&IDXB==false){
+                     IDXB=true;
                      Mdir="IDX5Bits";
                  }
                  //IDX 9 Bits
-                 if(IDXint>=-256&&val<=-17||IDXint>=16&&IDXint<=255){
+                 if(IDXint>=-256&&IDXint<=-17&&IDXB==false||IDXint>=16&&IDXint<=255&&IDXB==false){
                      Mdir="IDX1";
-                     
+                     IDXB=true;
                  }
                  //IDX 16Bits
-                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                 if(IDXint<=-257&&IDXint>=-32768&&IDXB==false||IDXint>=256&&IDXint<=65535&&IDXB==false){
                      Mdir="IDX2";
+                     IDXB=true;
                  }
-
-               }
+                 if(Operando.matches("[0-9]*,([+|-])*([X|x|Y|y|sp|SP])*[+|-]*$")&&IDXB==false){
+                     
+                     Mdir="IDX Pre/Post";
+                     //System.out.println("Mdir Pre/Post: "+Mdir);
+                 }
+                 
+                }
               }//termina Binario   
               }if(Operando.matches("^[-]*([0-9a-dA-D])*,.*")){//Sin base
                   
                 String   IDXcade=IDX.nextToken();
-                   
-                 
+                   System.out.println("Operando: "+Operando+"Cadena IDX "+IDXcade);
+            boolean IDXB=false;    
              // IDXfirst=IDX.nextToken();
               
-              if(IDXcade.matches("[a|A|b|B|d|D]")){
+              if(Operando.matches("^[aAbBdD],[XxYyspSPpcPC]*")){
                   Mdir="IDXA";//Acumulador
+                  IDXB=true;
+                  
               }
              
-              if(IDXcade.matches("^[-]?[0-9]")){
+              if(IDXcade.matches("^[-]?[0-9].*")&&IDXB==false){
                   banRel=true;
                   int  IDXint=Integer.parseInt(IDXcade);
                   //contienen Decimales
                   
                    // IDX 5Bits
-                 if(IDXint>=-16&&IDXint<=15||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")){
-                     
+                 if(IDXint>=-16&&IDXint<=15&&IDXB==false||Operando.matches(" ^,([+|-])*([X|x|Y|y|sp|SP|pc|PC])*[+|-]*$")&&IDXB==false){
+                     IDXB=true;
                      Mdir="IDX5Bits";
                  }
                  //IDX 9 Bits
-                 if(IDXint>=-256&&IDXint<=-17||IDXint>=16&&IDXint<=255){
+                 if(IDXint>=-256&&IDXint<=-17&&IDXB==false||IDXint>=16&&IDXint<=255&&IDXB==false){
                      Mdir="IDX1";
-                     
+                     IDXB=true;
                  }
                  //IDX 16Bits
-                 if(IDXint<=-257&&IDXint>=-32768||IDXint>=256&&IDXint<=65535){
+                 if(IDXint<=-257&&IDXint>=-32768&&IDXB==false||IDXint>=256&&IDXint<=65535&&IDXB==false){
                      Mdir="IDX2";
+                     IDXB=true;
                  }
-                 
+                 if(Operando.matches("[0-9]*,([+|-])*([X|x|Y|y|sp|SP])*[+|-]*$")&&IDXB==false){
+                     
+                     Mdir="IDX Pre/Post";
+                     //System.out.println("Mdir Pre/Post: "+Mdir);
+                 }
                  
                 }else{
                  
