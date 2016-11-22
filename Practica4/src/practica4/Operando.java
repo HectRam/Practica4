@@ -43,7 +43,7 @@ public class Operando extends Practica4{
           /*   
           
         */  
-         codop.toUpperCase();
+         codop=codop.toUpperCase();
           //System.out.println("Codop mod: "+codop);
          // System.out.println("A2: "+z);
         // System.out.println("Operando mod Despues: "+Operando);
@@ -170,7 +170,7 @@ public class Operando extends Practica4{
               }//Termina EQU
               ////////////////////////Directivas de constantes
               ////////////////////////DW, DB, DC.W, DC.B, FCB, FDB, FCC
-              if(codop.equals("DW")||codop.equals("DB")||codop.equals("DC.B")||codop.equals("FCB")||codop.equals("FDB")||codop.equals("FCC"))
+              if(codop.equals("DW")||codop.equals("DB")||codop.equals("DC.W")||codop.equals("DC.B")||codop.equals("FCB")||codop.equals("FDB")||codop.equals("FCC"))
               {
                   int DiCons=0;
                   //De un Byte
