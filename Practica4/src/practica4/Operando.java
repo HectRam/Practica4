@@ -24,7 +24,7 @@ public class Operando extends Practica4{
     
     
     
-    String[] Direccion(String Operando,String dir, int lin,String moddir,String codop,int BanOrg,String ContLoc){
+    String[] Direccion(String Operando,String dir, int lin,String moddir,String codop,int BanOrg,String ContLoc,String FCC){
         String[] Resultado = new String[] {"null","null","null","0000"};
         String  b=".err",Mdir="null", Res="null";
         String Byte="null";
@@ -37,22 +37,24 @@ public class Operando extends Practica4{
         BufferedWriter error=new BufferedWriter(fw);
         
            // System.out.println("Codop antes: "+codop);
-           System.out.println("Operando mod antes: "+Operando);
-      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7].*")||Operando.matches("^\\%.*")||Operando.matches("^\\#.*")||Operando.matches("^[0-9].*")||Operando.matches("^[a-zA-Z].*")||Operando.matches("^\\[.*\\]$")||Operando.matches("^\\-.*")||Operando.matches("^\\,.*")){
+         //  System.out.println("Operando mod antes: "+Operando);
+         
+      if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7].*")||Operando.matches("^\\%.*")||Operando.matches("^\\#.*")||Operando.matches("^[0-9].*")||Operando.matches("^[a-zA-Z].*")||Operando.matches("^\\[.*\\]$")||Operando.matches("^\\-.*")||Operando.matches("^\\,.*")||codop.equals("FCC")){
           /*   
           
         */  
          codop.toUpperCase();
           //System.out.println("Codop mod: "+codop);
          // System.out.println("A2: "+z);
-         System.out.println("Operando mod Despues: "+Operando);
+        // System.out.println("Operando mod Despues: "+Operando);
          
          ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                /////////////////////////////////////////////////////ContLoc
               //////////////////////////////////////////////////////////ORG
                
-              if(codop.equals("ORG")&&BanOrg!=1){
+              if(codop.equals("ORG")){
                   int ORG=0; 
+                  if(BanOrg!=1){
                    System.out.println("ORG: "+ORG+"ContLoc"+ContLoc);
                   if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$")){
                       //Entra Hexadecimal
@@ -104,7 +106,7 @@ public class Operando extends Practica4{
                                error.newLine();
                                   }
                           }
-                  
+              }
                   BanContLoc=1;
               }//Termina ORG
               /////////////////////EQU
@@ -172,9 +174,10 @@ public class Operando extends Practica4{
               {
                   int DiCons=0;
                   //De un Byte
+                  //System.out.println("sin base db fuera"+Operando+"codop: "+codop);
                   if(codop.equals("DB")||codop.equals("DC.B")||codop.equals("FCB"))
                   {
-                      
+                     // System.out.println("sin base db dentro"+Operando);
                       if(Operando.matches("^\\$[0-9A-Fa-f]*")||Operando.matches("^\\@[0-7]+")||Operando.matches("^\\%[10]*$"))
                       {
                           //entra Hexadecimal
@@ -229,7 +232,9 @@ public class Operando extends Practica4{
                            }
                        }//termina Binario
                       }else{//sin base
+                         // System.out.println("sin base db2 "+Operando);
                           if(Operando.matches("^[0-9]?[0-9]*")){
+                              
                           DiCons=Integer.parseInt(Operando,10);
                            if(DiCons<=255&&DiCons>=0){
                                //suma 1 al contloc
@@ -325,14 +330,17 @@ public class Operando extends Practica4{
                   }//termina de dos bytes
                   //Entra FCC
                   if(codop.equals("FCC")){
-                      
-                      if(Operando.matches("^\\\".*\\\"$")){
+                      int siz=FCC.length();
+                      if(siz>0){
                           
-                         int siz=Operando.length();
-                        String FCC=Operando.substring(1,siz);
-                        StringTokenizer FCCx = new StringTokenizer(FCC,"\\\"");
-                             String FCC2=FCCx.nextToken();
+                         //int siz=Operando.length();
+                        String FCC2=FCC.substring(0,siz-1);
+                        //System.out.println("FCC2"+FCC2);
+                       // StringTokenizer FCCx = new StringTokenizer(FCC2,"\\\"");
+                           //  String FCC3=FCCx.nextToken();
+                             Res=FCC2;
                             DiCons =FCC2.length();
+                         //   System.out.println("FCC2"+FCC2+"Tam "+DiCons);
                             int cont=Integer.parseInt(ContLoc,16);
                             cont=cont+DiCons;//suma la longitud del operando
                            ContLoc=Integer.toHexString(cont).toUpperCase();
@@ -534,6 +542,7 @@ public class Operando extends Practica4{
                   if(DIR>=0&&DIR<=255){
                      banDir=true; 
                   Mdir="DIR";
+                  
                   }
                   }//termina Hexadecimal
                   //Octal
@@ -543,6 +552,7 @@ public class Operando extends Practica4{
                   DIR=Integer.parseInt(dircad,8);  
                   if(DIR>=0&&DIR<=255){ 
                   Mdir="DIR";
+                  
                   }
                   banDir=true;
                   }//termina Octal
@@ -825,17 +835,86 @@ public class Operando extends Practica4{
              }//termina sin base
           }//termina IDX
           
-          /////////////////////////////////////////////////////////////16 Bits Indirecto
-          if(Operando.matches("^\\[[-0-9]*.*")){
+          /////////////////////////////////////////////////////////////16 Bits Indirecto [IDX2]
+          if(Operando.matches("^\\[[\\%\\$\\@]{0,1}[-0-9]+,[XxYyspSPpcPC]*\\]$")){
+              //int Idx2=0;
+              int tam=Operando.length();
+              String IDX2=Operando.substring(1,tam-1);//-1 quita el corchete final
+              StringTokenizer  IDX= new StringTokenizer(IDX2,",");
               //System.out.println("Operando[]: "+Operando);
-              
-          if(Operando.matches("\\[([0-9])*,([X|x|Y|y|sp|SP|pc|PC])*\\]")){
-              
-              Mdir="[IDX2]";
+             // System.out.println("[IDX2] "+IDX2);
+              if(IDX2.matches("^\\$[0-9A-Fa-f]*.*")||IDX2.matches("^\\@[-]*[0-7]*.*")||IDX2.matches("^\\%.*")){
+                  
+                  //Entra Hexadecimal
+                  if(IDX2.matches("^\\$[0-9A-Fa-f]*.*")){
+                      String Aux=IDX.nextToken();
+                    int tam2=Aux.length();
+                    String hexIdx=Aux.substring(1,tam2);
+                    int hex=Integer.parseInt(hexIdx,16);
+                    if(hex<=65535&&-32768<=hex){
+                        Mdir="[IDX2]";
+                        if(hex>=-32768&&hex<=-1){
+                       x = hex;  
+                       y = ~x;   
+                       z = y + 1;
+                       Res=dectohex(z);
+                       
+                      }
+                        
+                    }
+                    
+                  }//Termina Hexadecimal
+                    //entra Octal
+                  if(IDX2.matches("^\\@[-]*[0-7]*.*")){
+                      String Aux=IDX.nextToken();
+                      int tam2=Aux.length();
+                    String octIdx=Aux.substring(1,tam2);
+                    int oct=Integer.parseInt(octIdx,8);
+                    if(oct<=65535&&-32768<=oct){
+                        Mdir="[IDX2]";
+                        if(oct>=-32768&&oct<=-1){
+                       x = oct;  
+                       y = ~x;   
+                       z = y + 1;
+                       Res=dectooct(z);
+                       
+                      }
+                        
+                    }
+                  }//Termina Octal
+                  //Inicia Binario
+                  if(IDX2.matches("^\\%.*")){
+                      String Aux=IDX.nextToken();
+                       int tam2=Aux.length();
+                    String binIdx=Aux.substring(1,tam2);
+                    int bin=Integer.parseInt(binIdx,2);
+                    if(bin<=65535&&-32768<=bin){
+                        Mdir="[IDX2]";
+                        if(bin>=-32768&&bin<=-1){
+                       x = bin;  
+                       y = ~x;   
+                       z = y + 1;
+                       Res=dectooct(z);
+                       
+                      }
+                        
+                    }
+                  }//Termina Binario
+              }else{//sin base
+          if(Operando.matches("^\\[[-0-9]+,[XxYyspSPpcPC]*\\]$")){
+                   String Aux=IDX.nextToken();
+                       int tam2=Aux.length();
+                       //System.out.println("binIdx "+Aux+" "+tam);
+                    String binIdx=Aux.substring(0,tam2);
+                    int bin=Integer.parseInt(binIdx);
+                    if(bin<=65535&&-32768<=bin){
+                        Mdir="[IDX2]";
+                        
+                    }
           }else{
               error.write("Linea: "+lin+" Error el Operando no cumple los requerimientos para [IDX2] contiene: "+Operando);
               error.newLine();
-              
+          }
               
           }
           }
@@ -960,32 +1039,24 @@ public class Operando extends Practica4{
                 }//termina hexadecimal
           }else{//sin base 
                   
-                  // System.out.println("Entro A imm"+immcad);
+                  
                   if(immcad.matches("^[0-9].*")){
-                  IMM =Integer.parseInt(immcad, 10);
+                  IMM =Integer.parseInt(immcad);
+                  System.out.println("Entro A imm"+IMM);
                   if(IMM<=255&&-256<=IMM){
                   //System.out.println("Entro A imm8");
                       if(moddir.equals("INM")){
                   Mdir="IMM8";
                   //return Mdir;
-                  if(IMM>=-256&&IMM<=-1){
-                       x = IMM;  
-                       y = ~x;   
-                       z = y + 1;
-                       
-                      }
+                  
                       }
                   }
                   else if(IMM<=65535&&-32768<=IMM){
-                   //System.out.println("Entro A imm16");
+                   System.out.println("Entro A imm16"+IMM+"moddir "+moddir);
                       if(moddir.equals("INM")){
                   Mdir="IMM16";
                   //return Mdir;
-                  if(IMM>=-32768&&IMM<=-1){
-                       x = IMM;  
-                       y = ~x;   
-                       z = y + 1;
-                      }
+                  
                       }
                   }
               }else{
@@ -1179,7 +1250,15 @@ public class Operando extends Practica4{
       }
        
           error.close();
-        
+          if(Mdir!="null"&&BanContLoc==0){
+        ///Calcular bytes
+                  String cadby=Bytes(codop,Mdir);
+                  int byt=Integer.parseInt(cadby);
+                  int cont=Integer.parseInt(ContLoc,16);
+                  cont=cont+byt;
+                  ContLoc=Integer.toHexString(cont).toUpperCase();
+                  ///////////////////////////////////////////////
+          }
         }catch(Exception e){
             System.out.println("Hubo un problema en los modos de direccionamiento: "+e);
             
@@ -1190,7 +1269,8 @@ public class Operando extends Practica4{
         Resultado[1]=Res;
         Resultado[2]=Integer.toString(BanOrg);
         Resultado[3]=ContLoc;
-       //System.out.println(" Mdir: "+Resultado[0]+" Res op: "+Resultado[1]+" Ban ORG: "+Resultado[2]+" ContLoc: "+Resultado[3]);
+       
+       System.out.println(" Mdir: "+Resultado[0]+" Res op: "+Resultado[1]+" Ban ORG: "+Resultado[2]+" ContLoc: "+Resultado[3]);
       return Resultado;
     }
     
