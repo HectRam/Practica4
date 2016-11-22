@@ -26,14 +26,14 @@ public class Practica4 {
         
         Scanner s = new Scanner(System.in);
         String thisLine,dir,a=".asm",b=".err",i=".inst",ax=null,l=".tds";
-        String[] Resultado = new String[] {"null", "null","null","0000"};
+        String[] Resultado = new String[] {"null", "null","null","0000","null"};
         thisLine = null;
         String ContLoc="0000";
-        int poslin=0,c=0,pos=0,banbuffer=0,banCod=0,sioperI=2,operval=0,BanOrg=0,compara=0;
+        int poslin=0,c=0,pos=0,banbuffer=0,banCod=0,sioperI=2,operval=0,BanOrg=0,compara=0,tam2=0;
         espacios es;
         Operando op;
         
-        String etiqueta = null, codop = null, operando = null, comentario=null,linToken=null,codoplin=null,sioperS=null,codopprue=null,Mdir=null;
+        String etiqueta = null, codop = null, operando = null, comentario=null,linToken=null,codoplin=null,sioperS=null,codopprue=null,Mdir=null,FCC="";
         String exEt=null,exCod=null,moddir=null,codcal=null,bytescal=null,bytesxcal=null,totbytes=null,samecod=null,dircod=null,samecod2=null,Res="null";
         Vector<String> cadena;
         cadena = new Vector<>();
@@ -92,7 +92,23 @@ public class Practica4 {
                    {
                        
                    linToken=Token.nextToken();
-                    
+                    //System.out.println("Lintoken "+linToken);
+                    //FCC
+                   if(thisLine.matches(".*\\\"$")){
+                       
+                       int line=thisLine.indexOf('"');
+                       FCC=thisLine.substring(line+1);                      
+                     //  System.out.println("FCC "+FCC);
+                        tam2=FCC.length();
+                       //System.out.println("Tam2: "+tam2);
+                      /* if(tam2>0){
+                           //StringTokenizer FCCx = new StringTokenizer(FCC,"\\\"");
+                       String FCC2=FCC.substring(0,tam2-1);
+                       int tam3=FCC2.length();
+                       //String FCC2=FCC.substring(0,tam3);
+                           System.out.println("FCC2 "+FCC2+" tam "+tam3);
+                       }*/
+                        }
                    //manda a la clase publica espacio
                      espacio = es.spacio(thisLine);
                  /* if(thisLine.charAt(0) == ' ' || thisLine.charAt(0) == '\t'){
@@ -148,7 +164,7 @@ public class Practica4 {
                          
                          
                          String TABOP="TABOP";
-                         String mayus;
+                         String mayus,maux="null";
                          
                          try{
                              FileInputStream fsaux = new FileInputStream(TABOP+a);
@@ -168,7 +184,7 @@ public class Practica4 {
                                   // System.out.println("excod "+exCod+" mayus"+mayus);
                                    if(exCod.compareTo(linToken.toUpperCase())==0/*&&mayus!="null"&&mayus!=null&&mayus!=" "*/){
                                        errtab=false;
-                                       codop=linToken;
+                                       codop=linToken.toUpperCase();
                                        
                                        if(codop!="null"&&codop!=null&&codop!=" "){
                                            
@@ -209,13 +225,19 @@ public class Practica4 {
                                                operval=1;
                                                moddir="INM";
                                            }
-                                           if(!moddir.equals("INM")||!moddir.equals("REL")){
-                                               //System.out.println("Operando "+moddir);
-                                               moddir="null";
+                                           if(moddir.equals("INM")||moddir.equals("REL")){
+                                              
+                                               maux=moddir;
                                            }
+                                           
+                                               //System.out.println("Codop "+codop+" moddir ");
+                                               moddir="null";
+                                           
+                                           
                                            modosdir.close();
                                            }
                                        }
+                                       
                                    }
                                    
                                    
@@ -233,11 +255,15 @@ public class Practica4 {
                          if(linToken.matches("^[a-z]{0,4}")&&!"equ".equals(linToken)&&espacio==false&&linToken!=codop){
                              
                             etiqueta=linToken;
-                            System.out.println("Alterna linToken"+linToken);
+                            //System.out.println("Alterna linToken"+linToken);
                            // System.out.println("Eticod: "+codopprue);
                               //codopprue="null";
                               banEt=true;
                         }
+                         if(maux!="null"){
+                             moddir=maux;
+                         //System.out.println("moddir: "+moddir+" "+maux);
+                         }
                          }//termina practica 2
                                 
                                 /**
@@ -262,7 +288,7 @@ public class Practica4 {
                                      operando=linToken;
                                  //    System.out.println("Operando  "+operando);
                                     
-                                    Resultado = op.Direccion(operando,dir,c,moddir,codop,BanOrg, ContLoc);
+                                    Resultado = op.Direccion(operando,dir,c,moddir,codop,BanOrg, ContLoc,FCC);
                                     Mdir=Resultado[0];
                                     Res=Resultado[1];
                                     BanOrg=Integer.parseInt(Resultado[2]);
@@ -347,6 +373,7 @@ public class Practica4 {
                         
                         
                         
+                        
                    }
                    
                    
@@ -425,7 +452,7 @@ public class Practica4 {
                           codoplin=Mdir;
                       }
                       if(codoplin!="null"){
-                        if(codop!="null"&&etiqueta!="null"&&operando!="null"&&errBan==false&&banCod==1){
+                        if(codop!="null"&&etiqueta!="null"&&operando!="null"){
                      // System.out.println("Codop Equ: tronador04"+codop);
                       compara= op.TabsimCheck(dir,etiqueta);
                       if(compara==0){
@@ -433,7 +460,7 @@ public class Practica4 {
                       tabsim.newLine();
                       } 
                       }
-                       // if(compara==0){
+                        if(compara==0){
                       if(Res!="null"){
                      //inserta resultado de Operando 
                       operando=Res;
@@ -445,17 +472,7 @@ public class Practica4 {
                   instrucciones.write(c+"      "+ContLoc+"      "+etiqueta+"      "+codop+"      "+operando+"      "+codoplin);
                   instrucciones.newLine();  
                       }
-                       // }
-                      ///////////////Validacion de etiqueta y Operando en EQU
-                  /*if(codop.equals("EQU")&&etiqueta!="null"&&operando!="null"&&errBan==false&&banCod==1){
-                     // System.out.println("Codop Equ: tronador04"+codop);
-                      compara= op.TabsimCheck(dir,etiqueta);
-                      if(compara==0){
-                      tabsim.write(etiqueta+"|"+ContLoc);
-                      tabsim.newLine();
-                      } 
-                  }*/
-                  
+                       }
                       }
                       
                       
