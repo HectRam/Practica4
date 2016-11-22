@@ -2,16 +2,19 @@ Linea---CONTLOC---ETQ-----CODOP-----OPER-----MODOS
 2      0004      null      EQU      4      DTV
 4      0000      null      ORG      0      DTV
 5      0003      EN3      EQU      3      DTV
-11      0005      null      DW      2      DTV
-12      0006      null      DB      2      DTV
-14      0007      null      DC.B      2      DTV
-15      0008      e1      FCB      2      DTV
-16      000A      null      FDB      2222      DTV
-17      002C      null      DS      34      DTV
-18      004E      null      DS.B      34      DTV
-19      0092      null      DS.W      34      DTV
-20      00B4      e2      RMB      34      DTV
-21      00F8      null      RMW      34      DTV
-27      00F8      e3      swi      null      INH 
-33      00F9      null      FCB      $ff      DTV
+13      0005      null      DC.W      2      DTV
+14      0006      null      DC.B      2      DTV
+15      0007      e1      FCB      2      DTV
+16      0009      null      FDB      2222      DTV
+18      002B      null      DS.B      34      DTV
+19      006F      null      DS.W      34      DTV
+20      0091      e2      RMB      34      DTV
+21      00D5      null      RMW      34      DTV
+22      00E9      null      FCC      HOLA MUNDO      DTV
+26      0369      null      RMW      @500      DTV
+27      0369      swi      SWI      null      INH 
+33      036A      null      FCB      $ff      DTV
+37      036C      adca      ADCA      $3      DIR
 41      0002      EN5      EQU      2      DTV
+42      0004      ldaa      LDAA      5      DIR
+43      004C      fin      FCC      Solía \\ ñ \ ; mas      DTV

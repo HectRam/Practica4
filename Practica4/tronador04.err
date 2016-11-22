@@ -1,31 +1,24 @@
 Linea: 7 Error el modo de Direccionamiento no es valido
 Linea: 8 Error:FCB no cumple con el valor requerido (valor actual:80000)
 Linea: 10 Error:RMB no cumple con el valor requerido (valor actual:80000)
-Linea: 22 Error el modo de Direccionamiento no es valido
-Linea: 22 Error el modo de Direccionamiento no es valido
 Linea: 23 Error el modo de Direccionamiento no es valido
 Linea: 24 Error el modo de Direccionamiento no es valido
 Linea: 25 Error:FDB no cumple con el valor requerido (valor actual:80000)
-Linea: 26 Error no se encontro ningun modo de direccionamiento
-Linea: 29 Error el modo de Direccionamiento no es valido
-Linea: 30 Error el modo de Direccionamiento no es valido
-Linea: 31 Error el modo de Direccionamiento no es valido
+Linea: 29 Error:FCC no cumple con el las especificaciones: 0
+Linea: 30 Error:FCC no cumple con el las especificaciones: 0
+Linea: 31 Error:FCC no cumple con el las especificaciones: 0
 Linea: 34 Error el modo de Direccionamiento no es valido
 Linea: 35 Error:RMB no cumple con el valor requerido (valor actual:80000)
-Linea: 36 Error no se encontro ningun modo de direccionamiento
-Linea: 37 Error no se encontro ningun modo de direccionamiento
-Linea: 39 Error el modo de Direccionamiento no es valido
+Linea: 39 Error: DS.W no se encontro um valor
 Linea: 40 Error:RMW no cumple con el valor requerido (valor actual:80000)
-Linea: 43 Error el modo de Direccionamiento no es valido
-Linea: 43 Error el modo de Direccionamiento no es valido
-Linea: 43 Error el modo de Direccionamiento no es valido
-Linea: 43 Error el modo de Direccionamiento no es valido
 Linea: 1 Error la instruccion del codop debe de tener operando
-Linea: 6 Error la instruccion del codop debe de tener operando
-Linea: 9 Error la instruccion del codop debe de tener operando
+Linea: 6 Error codigo no encontrado
+Linea: 9 Error codigo no encontrado
+Linea: 11 Error codigo no encontrado
+Linea: 12 Error codigo no encontrado
+Linea: 17 Error codigo no encontrado
 Linea: 28 Error la instruccion del codop debe de tener operando
-Linea: 32 Error la instruccion del codop debe de tener operando
+Linea: 32 Error codigo no encontrado
 Linea: 38 Error la instruccion del codop debe de tener operando
 Linea: 44 Error no se puede tener tener etiqueta sin codop
 Linea: 44 Error codigo no encontrado
-Error: no se encontro el final del archivo(End)
